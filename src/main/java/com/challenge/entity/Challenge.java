@@ -1,5 +1,6 @@
 package com.challenge.entity;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -7,11 +8,14 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 @Entity
 @Table(name= "tb_challenge")
 @EntityListeners(AuditingEntityListener.class)
@@ -22,13 +26,25 @@ public class Challenge {
     @NotNull
     @Column(name = "id")
     private int id;
+
+    @NotNull
     @Column(name = "name")
+    @Size(max = 100)
     private String name;
+
+    @NotNull
     @Column(name = "slug")
+    @Size(max = 50)
     private String slug;
     @CreatedDate
     @Column(name = "created_at")
     private Timestamp created_at;
+
+    @OneToMany
+    private List<Acceleration> accelerations;
+
+    @OneToMany
+    private List<Submission> submissions;
 
     public Challenge() {
     }
@@ -38,53 +54,5 @@ public class Challenge {
         this.name = name;
         this.slug = slug;
         this.created_at = created_at;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSlug() {
-        return slug;
-    }
-
-    public void setSlug(String slug) {
-        this.slug = slug;
-    }
-
-    public Timestamp getCreated_at() {
-        return created_at;
-    }
-
-    public void setCreated_at(Timestamp created_at) {
-        this.created_at = created_at;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Challenge)) return false;
-        Challenge challenge = (Challenge) o;
-        return getId() == challenge.getId() &&
-                Objects.equals(getName(), challenge.getName()) &&
-                Objects.equals(getSlug(), challenge.getSlug()) &&
-                Objects.equals(getCreated_at(), challenge.getCreated_at());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getId(), getName(), getSlug(), getCreated_at());
     }
 }

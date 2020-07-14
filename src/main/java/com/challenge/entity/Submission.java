@@ -1,74 +1,47 @@
 package com.challenge.entity;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 @Entity
 @Table(name= "submission")
 @EntityListeners({AuditingEntityListener.class,})
+@Embeddable
 public class Submission {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull
+
+    @EmbeddedId
     @Column(name = "user_id")
-    private int user_id;
+    private User user_id;
+
+    @JoinColumn(name = "id")
     @Column(name = "challenge_id")
-    private int challenge_id;
+    private Challenge challenge_id;
+
+    @NotNull
     @Column(name = "score")
     private float score;
+
+    @CreatedDate
+    @Column(name = "created_at")
+    private Timestamp created_at;
 
     public Submission() {
     }
 
-    public Submission(int user_id, int challenge_id, float score) {
+    public Submission(User user_id, Challenge challenge_id, float score) {
         this.user_id = user_id;
         this.challenge_id = challenge_id;
         this.score = score;
-    }
-
-    public int getUser_id() {
-        return user_id;
-    }
-
-    public void setUser_id(int user_id) {
-        this.user_id = user_id;
-    }
-
-    public int getChallenge_id() {
-        return challenge_id;
-    }
-
-    public void setChallenge_id(int challenge_id) {
-        this.challenge_id = challenge_id;
-    }
-
-    public float getScore() {
-        return score;
-    }
-
-    public void setScore(float score) {
-        this.score = score;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Submission)) return false;
-        Submission that = (Submission) o;
-        return getUser_id() == that.getUser_id() &&
-                getChallenge_id() == that.getChallenge_id() &&
-                Float.compare(that.getScore(), getScore()) == 0;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getUser_id(), getChallenge_id(), getScore());
     }
 }
